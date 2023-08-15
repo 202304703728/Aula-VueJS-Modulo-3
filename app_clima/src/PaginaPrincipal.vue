@@ -60,7 +60,7 @@ export default {
     </template>
 
     <template v-slot:extra>
-        <h3>VueJS</h3>
+        <h3>VueJS e SweetAlert2</h3>
     </template>
     
   </Cabecalho>

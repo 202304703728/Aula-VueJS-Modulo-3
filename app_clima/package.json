@@ -9,7 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "vue": "^3.3.4"
+    "sweetalert2": "^11.7.23",
+    "vue": "^3.3.4",
+    "vue3-simple-alert": "^1.0.4"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.2.3",

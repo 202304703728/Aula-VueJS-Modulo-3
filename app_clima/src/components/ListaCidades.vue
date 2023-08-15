@@ -1,5 +1,5 @@
 <template>
-  <h2>Cidade Selecionada: {{ cidadeselecionada }}</h2>
+  <h2>Selecione uma cidade: {{ cidadeselecionada }}</h2>
   <div class="lista">
     <CardCidade
       v-for="cidade in cidades"
@@ -10,13 +10,27 @@
   </div>
 </template>
 
+<vue-basic-alert ref="alert" />
+
 <script>
+
 import CardCidade from "./CardCidade.vue";
+import Alerta from "sweetalert2";
+
 export default {
   components: { CardCidade },
   methods:{
     mudarcidadeselecionada(cidade){
-      alert(cidade.name)
+      //alert(cidade.name)
+      //Alerta.fire("Você clicou em:", cidade.name,"info")
+      Alerta.fire({
+        //position: 'top-end',
+        icon: 'info',
+        title: 'Você clicou em:' + cidade.name,
+        showConfirmButton: true,
+        confirmButtonText: "Entendido",
+        //timer: 1500
+      })
     }
   },
   data() {
