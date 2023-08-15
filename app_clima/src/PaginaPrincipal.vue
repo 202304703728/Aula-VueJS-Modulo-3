@@ -56,11 +56,11 @@ export default {
   <Cabecalho>
 
     <template v-slot:subtitulo>
-        <h2>Subtítulo aqui</h2>
+        <h2>Utilizando</h2>
     </template>
 
     <template v-slot:extra>
-        <h3>Texto extra</h3>
+        <h3>VueJS</h3>
     </template>
     
   </Cabecalho>
