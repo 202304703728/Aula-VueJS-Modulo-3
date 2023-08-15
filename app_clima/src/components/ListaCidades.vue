@@ -10,7 +10,7 @@
   </div>
 </template>
 
-<vue-basic-alert ref="alert" />
+<!--<vue-basic-alert ref="alert" /> -->
 
 <script>
 

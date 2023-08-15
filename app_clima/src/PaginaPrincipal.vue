@@ -66,6 +66,8 @@ export default {
   </Cabecalho>
 
   <ListaCidades />
+  <!-- corrigir primeiro -->
+  <!--<Tempo /> -->
 </template>
 
 
@@ -73,10 +75,14 @@ export default {
 import "./assets/estilo.css";
 import Cabecalho from "./components/Cabecalho.vue";
 import ListaCidades from "./components/ListaCidades.vue";
+import Tempo from "./components/Tempo.vue";
 
 export default {
-  components: { Cabecalho, ListaCidades },
-
+  components: { 
+    Cabecalho,
+    ListaCidades, 
+    Tempo
+  },
   methods: {},
   computed: {},
 };
