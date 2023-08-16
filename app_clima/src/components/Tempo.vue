@@ -1,32 +1,35 @@
 <template>
-
-    <h2>Digite a sua localização: </h2>
-    <!--<h4>País, Estado (UF), Cidade ou Bairro</h4>-->
+    <div class="entrada">
+    <h2>Digite a sua localização: {{ localizacao.toUpperCase() }} </h2>
+    </div>
+    <h4>País, Estado (UF), Cidade ou Bairro</h4>
 
     <div id="wrapper">
         <div id="form-wrapper">
             <div id="o-form">
-                <input type="text" id="texto-localizacao" v-model="localizacao" />
+                <input type="text" id="texto-localizacao" v-model="localizacao" @keyup.enter="retornaTempo" />
                 <div>
                     <button @click="retornaTempo">Informar o Clima</button>
-                    <!--<button @click="usarLocalizacao">Usar a Localização</button>-->
+                    <button @click="usarLocalizacao">Usar a Geolocalização</button>
                 </div>
             </div>
             <div v-if="houveErro">{{ houveErro }}</div>
         </div>
     </div>
 
-    <div v-if="localizacao.length > 0">
+    <div v-if="localizacao">
         <div v-if="dadosDoTempo" class="card">
             <div v-if="dadosDoTempo">
                 <h2>{{ dadosDoTempo.name }}</h2>
                 <div class="card-img">
                     <img :src="retornaUrlDoIconeDoTempo(dadosDoTempo.weather[0].icon)" class="w-16 h-16 mr-4" />
+                </div>
+                <div>
                     <p>{{ dadosDoTempo.weather[0].description }}</p>
                 </div>
                 <div>
                     <div class="temperatura">
-                        <p>{{ retornaTemperatura() }}</p>
+                        {{ retornaTemperatura() }}
                     </div>
                     <div>
                         <button @click="alternaUnidadeDeTemperatura">
@@ -35,8 +38,11 @@
                     </div>
                 </div>
                 <div>
-                    <div>
+                    <div v-if="dadosDoTempo.time">
                         <p>{{ dadosDoTempo.time }}</p>
+                    </div>
+                    <div v-else>
+                        <p>(hora insdisponível<br>na geolocalização)</p>
                     </div>
                 </div>
             </div>
@@ -45,7 +51,9 @@
     <div v-else>
         {{ this.dadosDoTempo = null }}
     </div>
-
+    <!-- Mantive essa informação para caso queira ver quais sãos os dados retornados,
+    pois verifiquei que não retorna time quando a geolocalização é utilizada -->
+    <!--{{ dadosDoTempo }}-->
 </template>
 
 <script>
@@ -145,6 +153,7 @@ export default {
 
                         const data = await response.json();
                         this.dadosDoTempo = data;
+                        this.localizacao = this.dadosDoTempo.name;
 
                     } catch (houveErro) {
                         Alerta.fire("Erro", "Ocorreu um erro ao buscar os dados meteorológicos. Por favor, tente novamente mais tarde.", "error");

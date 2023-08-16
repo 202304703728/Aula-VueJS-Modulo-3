@@ -10,7 +10,7 @@ body {
   background-color: #00030c;
   background-image: linear-gradient(#f0eb90, #ccc);
   background: radial-gradient(at bottom, #242f40 1%, #00030c 90%);
-  color: #ed9595;
+  color: #0e790e;
   font-family: sans-serif;
   text-align: center;
 }
@@ -47,15 +47,14 @@ h1 {
   margin: 5px;
 }
 
-h2, h3 {
-  /*margin: 0;
-  color: #3669b3;
-  opacity: 0.8;
-  text-align: left;
-  margin-left: 2.5em;
-  font-size: 1em; */
+h2, h3, h4 {
   text-align: center;
-  color: #FFF;
+  color: #ffffff;
+}
+
+.entrada h2 {
+  text-align: center;
+  color: #3d6d53;
 }
 
 #o-form{
@@ -116,7 +115,7 @@ button:hover{
   background-color: #f9f6f6;
   border-radius: 13px;
   width: 200px;
-  height: 240px;
+  height: 300px;
   box-shadow: 0px 10px 10px rgba(110, 110, 110, 0.2);
   position: relative;
   padding: 0.33rem;
