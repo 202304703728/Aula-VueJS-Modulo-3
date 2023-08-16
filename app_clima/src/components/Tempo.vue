@@ -1,6 +1,6 @@
 <!-- alterar/corrigir -->
 <template>
-    <h2>Digite a sua localização: </h2>
+    <h2>Digite a sua localização: </h2>   
     <div class="lista"> 
             <div class="flex flex-col sm:flex-row items-center">
                 <input type="text" id="location-input" v-model="location"/>

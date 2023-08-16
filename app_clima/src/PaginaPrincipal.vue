@@ -67,7 +67,7 @@ export default {
 
   <ListaCidades />
   <!-- corrigir primeiro -->
-  <!--<Tempo /> -->
+  <!-- Tempo /--> 
 </template>
 
 
