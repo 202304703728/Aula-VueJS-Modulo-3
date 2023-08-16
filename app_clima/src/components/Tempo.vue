@@ -1,49 +1,51 @@
-<!-- alterar/corrigir -->
 <template>
-    <h2>Digite a sua localização: </h2>   
-    <div class="lista"> 
-            <div class="flex flex-col sm:flex-row items-center">
-                <input type="text" id="location-input" v-model="location"/>
-                <div class="flex mt-2 sm:mt-0">
-                    <button @click="getWeather"
-                        class="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 rounded-l shadow-md hover:shadow-lg transform hover:scale-105 transition duration-300 ease-in-out">
-                        Informar o Clima
-                    </button>
-                    <button @click="getLocation"
-                        class="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 rounded-r shadow-md hover:shadow-lg transform hover:scale-105 transition duration-300 ease-in-out">
-                        Usar a Localização Atual
-                    </button>
-                </div>
-            </div>
-        <div v-if="error">{{ error }}</div>
-        <div v-if="weatherData"
-            class="weather-info bg-blue-800 shadow-lg hover:shadow-xl rounded-lg p-6 w-80 transform hover:scale-105 transition duration-300 ease-in-out">
-            <h2 class="text-2xl font-bold mb-4">{{ weatherData.name }}</h2>
-            <div class="flex items-center mb-4">
-                <img :src="getWeatherIconUrl(weatherData.weather[0].icon)" class="w-16 h-16 mr-4" />
-                <p class="text-lg">{{ weatherData.weather[0].description }}</p>
-            </div>
-            <div class="flex justify-between mb-4">
-                <div>
-                    <p class="text-4xl font-bold">{{ getTemperature() }}</p>
 
-                </div>
+    <h2>Digite a sua localização: </h2>
+    <!--<h4>País, Estado (UF), Cidade ou Bairro</h4>-->
+
+    <div id="wrapper">
+        <div id="form-wrapper">
+            <div id="o-form">
+                <input type="text" id="texto-localizacao" v-model="localizacao" />
                 <div>
-                    <button @click="toggleTemperatureUnit"
-                        class="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 rounded-full shadow-md hover:shadow-lg transform hover:scale-105 transition duration-300 ease-in-out">
-                        {{ getTemperatureUnit(true) }}
-                    </button>
+                    <button @click="retornaTempo">Informar o Clima</button>
+                    <!--<button @click="usarLocalizacao">Usar a Localização</button>-->
                 </div>
             </div>
-            <div class="flex justify-between mb-4">
+            <div v-if="houveErro">{{ houveErro }}</div>
+        </div>
+    </div>
+
+    <div v-if="localizacao.length > 0">
+        <div v-if="dadosDoTempo" class="card">
+            <div v-if="dadosDoTempo">
+                <h2>{{ dadosDoTempo.name }}</h2>
+                <div class="card-img">
+                    <img :src="retornaUrlDoIconeDoTempo(dadosDoTempo.weather[0].icon)" class="w-16 h-16 mr-4" />
+                    <p>{{ dadosDoTempo.weather[0].description }}</p>
+                </div>
                 <div>
-                    <p class="text-lg font-bold"></p>
-                    <p class="text-lg">{{ weatherData.time }}</p>
+                    <div class="temperatura">
+                        <p>{{ retornaTemperatura() }}</p>
+                    </div>
+                    <div>
+                        <button @click="alternaUnidadeDeTemperatura">
+                            {{ retornaUnidadeDeTemperatura(true) }}
+                        </button>
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <p>{{ dadosDoTempo.time }}</p>
+                    </div>
                 </div>
             </div>
         </div>
-
     </div>
+    <div v-else>
+        {{ this.dadosDoTempo = null }}
+    </div>
+
 </template>
 
 <script>
@@ -51,28 +53,29 @@
 import Alerta from "sweetalert2";
 
 export default {
-    name: "WeatherApp",
+
     data() {
         return {
-            location: "",
-            weatherData: null,
-            isCelsius: true,
-            error: null,
+            localizacao: "",
+            dadosDoTempo: null,
+            ehCelsius: true,
+            houveErro: null,
         };
     },
+
     methods: {
-        async getWeather() {
-            this.weatherData = null; // set weatherData to null before making API call
-            this.error = null; // reset error state before making API call
+        async retornaTempo() {
+            this.dadosDoTempo = null;
+            this.houveErro = null;
 
             try {
                 const response = await fetch(
-                    `https://api.openweathermap.org/data/2.5/weather?q=${this.location
-                    }&appid=60015bca9662a2ab816cbdd318050800&units=${this.isCelsius ? "metric" : "imperial"
+                    `https://api.openweathermap.org/data/2.5/weather?q=${this.localizacao
+                    }&appid=60015bca9662a2ab816cbdd318050800&units=${this.ehCelsius ? "metric" : "imperial"
                     }`
                 );
                 const data = await response.json();
-                this.weatherData = data;
+                this.dadosDoTempo = data;
 
                 const lat = data.coord.lat;
                 const lon = data.coord.lon;
@@ -81,25 +84,24 @@ export default {
                 );
                 const timezoneData = await timezoneResponse.json();
                 const dateTime = new Date(timezoneData.formatted);
-                this.weatherData.time = dateTime.toLocaleTimeString([], {
+                this.dadosDoTempo.time = dateTime.toLocaleTimeString([], {
                     hour: "2-digit",
                     minute: "2-digit",
                     hour12: false,
                 });
-            } catch (error) {
-                this.error =
-                    "An error occurred while fetching the weather data. Please try again later.";
+            } catch (houveErro) {
+                Alerta.fire("Erro", "Ocorreu um erro ao buscar os dados meteorológicos. Por favor, tente novamente mais tarde.", "error");
             }
         },
-        getTemperature() {
-            if (this.isCelsius) {
-                return `${Math.round(this.weatherData.main.temp)}°C`;
+        retornaTemperatura() {
+            if (this.ehCelsius) {
+                return `${Math.round(this.dadosDoTempo.main.temp)}°C`;
             } else {
-                return `${Math.round(this.weatherData.main.temp * 1.8 + 32)}°F`;
+                return `${Math.round(this.dadosDoTempo.main.temp * 1.8 + 32)}°F`;
             }
         },
-        getTemperatureUnit(short = false) {
-            return this.isCelsius
+        retornaUnidadeDeTemperatura(short = false) {
+            return this.ehCelsius
                 ? short
                     ? "C"
                     : "Celsius"
@@ -107,29 +109,29 @@ export default {
                     ? "F"
                     : "Fahrenheit";
         },
-        toggleTemperatureUnit() {
-            this.isCelsius = !this.isCelsius;
+        alternaUnidadeDeTemperatura() {
+            this.ehCelsius = !this.ehCelsius;
 
-            if (this.weatherData) {
-                if (this.isCelsius) {
-                    this.weatherData.main.temp =
-                        ((this.weatherData.main.temp - 32) * 5) / 9;
+            if (this.dadosDoTempo) {
+                if (this.ehCelsius) {
+                    this.dadosDoTempo.main.temp =
+                        ((this.dadosDoTempo.main.temp - 32) * 5) / 9;
                 } else {
-                    this.weatherData.main.temp =
-                        (this.weatherData.main.temp * 9) / 5 + 32;
+                    this.dadosDoTempo.main.temp =
+                        (this.dadosDoTempo.main.temp * 9) / 5 + 32;
                 }
             }
-            this.getWeather();
+            this.retornaTempo();
         },
-        getWeatherIconUrl(icon) {
+        retornaUrlDoIconeDoTempo(icon) {
             try {
                 return `https://openweathermap.org/img/w/${icon}.png`;
-            } catch (error) {
-                console.error(error);
+            } catch (houveErro) {
+                Alerta.fire("Erro", houveErro, "error");
                 return null;
             }
         },
-        getLocation() {
+        usarLocalizacao() {
             if ("geolocation" in navigator) {
                 navigator.geolocation.getCurrentPosition(async (position) => {
                     const latitude = position.coords.latitude;
@@ -137,28 +139,30 @@ export default {
 
                     try {
                         const response = await fetch(
-                            `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=60015bca9662a2ab816cbdd318050800&units=${this.isCelsius ? "metric" : "imperial"
+                            `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=60015bca9662a2ab816cbdd318050800&units=${this.ehCelsius ? "metric" : "imperial"
                             }`
                         );
+
                         const data = await response.json();
-                        this.weatherData = data;
-                    } catch (error) {
-                        this.error =
-                            "An error occurred while fetching the weather data. Please try again later.";
+                        this.dadosDoTempo = data;
+
+                    } catch (houveErro) {
+                        Alerta.fire("Erro", "Ocorreu um erro ao buscar os dados meteorológicos. Por favor, tente novamente mais tarde.", "error");
                     }
                 });
             } else {
-                alert("Geolocation is not available");
+                Alerta.fire("Atenção", "Geolocalização não está disponível", "info");
             }
         },
     },
+
     computed: {
-        isLocationEmpty() {
-            return !this.location && !("geolocation" in navigator);
+        localizacaoEstaVazia() {
+            return !this.localizacao && !("geolocation" in navigator);
         },
-        getWeatherMessage() {
-            if (this.weatherData) {
-                const weatherDescription = this.weatherData.weather[0].description;
+        retornaMensagemSobreTempo() {
+            if (this.dadosDoTempo) {
+                const weatherDescription = this.dadosDoTempo.weather[0].description;
                 return (
                     weatherDescription.charAt(0).toUpperCase() +
                     weatherDescription.slice(1)
@@ -167,12 +171,7 @@ export default {
             return "";
         },
     },
+
 };
+
 </script>
-  
-<style>
-input:focus {
-    outline: none;
-    box-shadow: none;
-}
-</style>

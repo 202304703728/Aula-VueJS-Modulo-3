@@ -65,9 +65,9 @@ export default {
     
   </Cabecalho>
 
-  <ListaCidades />
+  <!-- ListaCidades /-->
   <!-- corrigir primeiro -->
-  <!-- Tempo /--> 
+  <Tempo/> 
 </template>
 
 
